@@ -1,0 +1,210 @@
+#!/bin/bash
+# @file backup
+# @date Jun 28, 2012
+#
+# @author Milos Subotic milos.subotic.sm@gmail.com
+# @license GPLv3+
+#
+# @brief Command for backuping files.
+#
+# @version 2.0
+# @changelog:
+# 1.0 - Initial version.
+# 2.0 - Added -b and -z flags for archiving to tar.bz2 or zip and -a removed.
+#
+# How to install: copy in some folder which is in PATH.
+# Do not forget to give right premisions. For example:
+#
+#    chmod 747 backup
+#    cp backup /usr/local/bin
+#
+# How to use: just execute it with path of files or directories 
+# which you want to backup for arguments. For example:
+#
+#    backup file1.txt directory2
+#
+# Output will be name of file with additional exension
+# .backup-<date and time of backup>
+# In previous example it will be like this:
+# 
+#    file1.txt.backup-2012-06-28-06-13-29 
+#    directory2.backup-2012-06-28-06-13-29
+#
+# If you use -b or -z options for archiving target
+# output will look like this
+#	file1.txt.backup-2012-06-28-06-13-29.tar.bz2
+#   directory2.backup-2012-06-28-06-13-29.tar.bz2
+
+
+# No args.
+if test $# -le 0
+then
+
+	echo "backup: missing operand
+Try \`backup --help' for more information."
+
+
+	exit -1
+
+fi
+
+
+# Print help.
+if test $1 == '-h' || test $1 == '--help'
+then
+	echo "Usage: backup [OPTION]... TARGET...
+Backup the TARGET(s), files or directories.
+
+Mandatory arguments to long options are mandatory for short options too.
+      -h, --help      display this help and exit
+      --version       output version information and exit
+      -v, --verbose   print backup targets
+      -n, --not-same-time backup target do not have the same timestamp
+      -b, --bz2   archive target to tar.bz2
+      -z, --zip       archive target to zip
+
+Report backup bugs to milos.subotic.sm@gmail.com"
+
+	exit 0
+
+fi
+
+if test "$1" == "--version"
+then
+	echo "backup 2.0
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Milos Subotic milos.subotic.sm@gmail.com."
+
+	exit 0
+fi
+
+
+
+verboseFlag=0
+notSameTimeFlag=0
+unset archiveCommand
+unset archiveExtension
+
+sameTime=$(date +%F-%T | sed 's/:/-/g')
+
+# Backup targets.
+for arg in "$@"
+do
+
+	
+	if test "${arg:0:1}" == "-"
+	then
+		# Process flags.
+
+		if test "${arg:1:1}" == "-"
+		then
+
+			# Long flags.
+			case "${arg:2}" in
+				verbose) 
+					verboseFlag=1
+				;;
+				not-same-time)
+					notSameTimeFlag=1
+				;;
+				bz2)
+					archiveCommand="tar cfj"
+					archiveExtension=".tar.bz2"
+				;;
+				zip)
+					archiveCommand="zip -9qr"
+					archiveExtension=".zip"
+				;;
+				*) 
+					echo "backup: invalid option -- '${arg:2}'
+Try \`backup --help' for more information."
+					exit -1
+				;;
+			esac	
+		else
+			# Short flags.
+			argLen="${#arg}"
+			for (( i=1; i < $argLen; i++ ))
+			do
+				case "${arg:$i:1}" in
+					v) 
+						verboseFlag=1
+					;;
+					n)
+						notSameTimeFlag=1
+					;;
+					b)
+						archiveCommand="tar cfj"
+						archiveExtension=".tar.bz2"
+					;;
+					z)
+						archiveCommand="zip -9qr"
+						archiveExtension=".zip"
+					;;
+					*) 
+						echo "backup: invalid option -- '${arg:$i:1}'
+Try \`backup --help' for more information."
+						exit -1
+					;;
+				esac
+			done
+
+		fi
+
+	else
+		# Backup targets.
+
+		# Remove any trailing / from path.
+		target=$(echo "$arg" | sed 's/\/*$//' )
+
+		if test $notSameTimeFlag -ne 0
+		then
+			timestamp=$(date +%F-%T | sed 's/:/-/g')
+		else
+			timestamp=$sameTime
+		fi
+
+		src="${target}"
+		
+		dst="${target}.backup-${timestamp}${archiveExtension}"
+	
+
+		# If in verbose mode then print target.	
+		if test $verboseFlag -ne 0
+		then
+			echo "backup \`$src' -> \`$dst'"
+		fi
+
+		# Backuping target.
+		if test -z "$archiveCommand"
+		then
+			cp -r "${src}" "${dst}"
+		else
+
+			if test $( expr index "$dst" '/') -ne 0
+			then
+				dir="${dst%/*}"
+			else
+				dir='./'
+			fi
+
+			dstFile="${dst##*/}"
+			srcFile="${src##*/}"
+
+			bash -c "cd $dir; $archiveCommand \"$dstFile\" \"$srcFile\""
+
+		fi
+	
+
+	fi
+	
+
+
+done
+
+
+exit 0
+
