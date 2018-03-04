@@ -47,6 +47,7 @@ make -j$JOBS
 $SUDO make install
 cd ..
 rm -rf avfs-$AVFS_VERSION
+$UDO ldconfig -v
 
 tar xfvj worker-$WORKER_VERSION.tar.bz2
 cd worker-$WORKER_VERSION/
@@ -74,5 +75,7 @@ rm -rf worker-$WORKER_VERSION
 unzip .worker.backup*.zip -d ~/
 
 $SUDO cp backup $PREFIX/bin/
+
+echo 'export WORKER_XEDITOR=atom' >> ~/.profile
 
 ###############################################################################
