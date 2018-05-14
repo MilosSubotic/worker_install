@@ -47,7 +47,7 @@ make -j$JOBS
 $SUDO make install
 cd ..
 rm -rf avfs-$AVFS_VERSION
-$UDO ldconfig -v
+$SUDO ldconfig -v
 
 tar xfvj worker-$WORKER_VERSION.tar.bz2
 cd worker-$WORKER_VERSION/
