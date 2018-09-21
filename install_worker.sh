@@ -2,8 +2,8 @@
 ###############################################################################
 
 JOBS=4
-AVFS_VERSION=1.0.5
-WORKER_VERSION=3.15.0
+AVFS_VERSION=1.0.6
+WORKER_VERSION=3.15.2
 
 #PREFIX=$HOME/local
 #SUDO=
