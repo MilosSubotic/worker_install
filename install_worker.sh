@@ -72,6 +72,7 @@ $SUDO make install
 cd ..
 rm -rf worker-$WORKER_VERSION
 
+rm -rf ~/.worker
 unzip .worker.backup*.zip -d ~/
 
 $SUDO cp backup $PREFIX/bin/
