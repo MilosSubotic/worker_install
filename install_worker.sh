@@ -24,7 +24,7 @@ then
 fi
 
 
-sudo apt-get install libfuse-dev libmagic-dev libdbus-1-dev fuse \
+sudo apt install -y libfuse-dev libmagic-dev libdbus-1-dev fuse \
 	liblzma-dev libx11-dev libxinerama-dev libxft-dev libdbus-glib-1-dev \
 	g++ liblua5.1-dev
 
