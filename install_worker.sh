@@ -25,13 +25,16 @@ fi
 
 
 sudo apt install -y libfuse-dev libmagic-dev libdbus-1-dev fuse \
-	liblzma-dev libx11-dev libxinerama-dev libxft-dev libdbus-glib-1-dev \
+	libx11-dev libxinerama-dev libxft-dev libdbus-glib-1-dev \
 	g++ liblua5.1-dev
+	
+# Somewhere liblzma makes a problem, so it could be deinstalled.
+#sudo apt purge -y liblzma-dev
 
 
 tar xfv avfs-$AVFS_VERSION.tar.bz2
 cd avfs-$AVFS_VERSION/
-./configure --enable-fuse --with-liblzma --prefix=$PREFIX
+./configure --enable-fuse --prefix=$PREFIX
 #Configuration details:
 #  Building library                          : yes (recommended: yes)
 #  Building avfsd for fuse                   : yes (recommended: yes)
@@ -40,7 +43,8 @@ cd avfs-$AVFS_VERSION/
 #
 #  Use system zlib                           : no  (recommended: no)
 #  Use system bzlib                          : no  (recommended: no)
-#  Use liblzma                               : yes (recommended: yes)
+#  Use liblzma                               : no  (recommended: yes)
+#  Use libzstd                               : no  (recommended: yes)
 #
 #
 make -j$JOBS
