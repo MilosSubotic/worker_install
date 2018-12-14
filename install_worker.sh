@@ -29,7 +29,7 @@ sudo apt install -y libfuse-dev libmagic-dev libdbus-1-dev fuse \
 	g++ liblua5.1-dev
 	
 # Somewhere liblzma makes a problem, so it could be deinstalled.
-#sudo apt purge -y liblzma-dev
+sudo apt purge -y liblzma-dev
 
 
 tar xfv avfs-$AVFS_VERSION.tar.bz2
