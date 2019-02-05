@@ -27,7 +27,7 @@ fi
 sudo apt install -y libfuse-dev libmagic-dev libdbus-1-dev fuse \
 	libx11-dev libxinerama-dev libxft-dev libdbus-glib-1-dev \
 	g++ liblua5.1-dev
-	
+
 # Somewhere liblzma makes a problem, so it could be deinstalled.
 sudo apt purge -y liblzma-dev
 
@@ -48,6 +48,7 @@ cd avfs-$AVFS_VERSION/
 #
 #
 make -j$JOBS
+$SUDO make uninstall
 $SUDO make install
 cd ..
 rm -rf avfs-$AVFS_VERSION
@@ -72,6 +73,7 @@ cd worker-$WORKER_VERSION/
 #
 #
 make -j$JOBS
+$SUDO make uninstall
 $SUDO make install
 cd ..
 rm -rf worker-$WORKER_VERSION
